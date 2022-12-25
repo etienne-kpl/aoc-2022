@@ -5,7 +5,6 @@ INPUT = open('input.txt').read
 array = INPUT.dup.split(/\n/)
 array.map!(&:split)
 
-opponent_score = 0
 my_score = 0
 
 array_op = %w[A B C]
