@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
-INPUT = open('input.txt').read
+INPUT = IO.readlines('input.txt', chomp: true)
 
-pairs = INPUT.dup.split(/\n/).map { |e| e.split(',')}.map { |e| e.map { |e| e.split('-').map(&:to_i) } }
-pairs.map! do |e|
-  {
-    elf1: e.first.first..e.first.last,
-    elf2: e.last.first..e.last.last
-  }
+pairs = INPUT.dup.map do |el|
+  regexp = /(\d+)-(\d+),(\d+)-(\d+)/
+  [regexp.match(el)[1].to_i..regexp.match(el)[2].to_i, regexp.match(el)[3].to_i..regexp.match(el)[4].to_i]
 end
-  p pairs.first(3)
+
+overlaps = pairs.select do |el|
+  el.first === el.last.first && el.first === el.last.last ||
+  el.last === el.first.first && el.last === el.first.last
+end
+
+p overlaps.size
