@@ -7,9 +7,14 @@ pairs = INPUT.dup.map do |el|
   [regexp.match(el)[1].to_i..regexp.match(el)[2].to_i, regexp.match(el)[3].to_i..regexp.match(el)[4].to_i]
 end
 
-overlaps = pairs.select do |el|
+overlaps_total = pairs.select do |el|
   el.first === el.last.first && el.first === el.last.last ||
   el.last === el.first.first && el.last === el.first.last
 end
 
-p overlaps.size
+overlaps_partial = pairs.select do |el|
+  el.first === el.last.first || el.first === el.last.last ||
+  el.last === el.first.first || el.last === el.first.last
+end
+
+p overlaps_partial.size
