@@ -18,3 +18,4 @@ overlaps_partial = pairs.select do |el|
 end
 
 p overlaps_partial.size
+p overlaps_total.size
