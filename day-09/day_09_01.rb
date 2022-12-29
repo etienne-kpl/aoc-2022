@@ -36,13 +36,18 @@ commands.map do |command|
   end
 end
 
-# tail_positions = head_positions.each_cons(2).map do |cur, nxt|
-#   if (nxt[x] - cur[x]).abs >= 2 && nxt[y] = cur[y]
+tail_positions = head_positions.clone.map(&:clone)
 
-#   end
-# end
+tail_positions.map.with_index do |el, i|
+  if tail_positions[i + 1].nil?
+    el
+  elsif (tail_positions[i + 1][:x] - el[:x]).abs == 2 || (tail_positions[i + 1][:y] - el[:y]).abs == 2
+    tail_positions[i + 1] = head_positions[i]
+  else
+    tail_positions[i + 1] = el
+  end
+end
 
-
-p head_positions.first(10)
-# p tail_positions.first(10)
-p head_positions.uniq.size
+p head_positions.size
+p tail_positions.size
+p tail_positions.uniq.size
