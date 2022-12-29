@@ -10,17 +10,39 @@ end
 x = 0
 y = 0
 
-visited_positions = [{ x: x, y: y }]
+head_positions = [{ x: x, y: y }]
 commands.map do |command|
   case command.first
-  when 'U' then y += 1
-  when 'R' then x += 1
-  when 'D' then y -= 1
-  when 'L' then x -= 1
+  when 'U'
+    command.last.times do
+      y += 1
+      head_positions << { x: x, y: y }
+    end
+  when 'R'
+    command.last.times do
+      x += 1
+      head_positions << { x: x, y: y }
+    end
+  when 'D'
+    command.last.times do
+      y -= 1
+      head_positions << { x: x, y: y }
+    end
+  when 'L'
+    command.last.times do
+      x -= 1
+      head_positions << { x: x, y: y }
+    end
   end
-  visited_positions << { x: x, y: y }
 end
 
-p x
-p y
-p visited_positions.uniq.size
+# tail_positions = head_positions.each_cons(2).map do |cur, nxt|
+#   if (nxt[x] - cur[x]).abs >= 2 && nxt[y] = cur[y]
+
+#   end
+# end
+
+
+p head_positions.first(10)
+# p tail_positions.first(10)
+p head_positions.uniq.size
