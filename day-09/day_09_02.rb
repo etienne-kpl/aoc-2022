@@ -2,15 +2,14 @@
 
 # INPUT = IO.readlines('input.txt', chomp: true)
 
-# INPUT = ['R 5',
-#   'U 8',
-#   'L 8',
-#   'D 3',
-#   'R 17',
-#   'D 10',
-#   'L 25',
-#   'U 20']
-INPUT = ['R 4', 'U 4', 'L 3', 'D 1', 'R 4', 'D 1', 'L 5', 'R 2']
+INPUT = ['R 5',
+  'U 8',
+  'L 8',
+  'D 3',
+  'R 17',
+  'D 10',
+  'L 25',
+  'U 20']
 
 commands = INPUT.map do |el|
   regexp = /(\w) (\d+)/
@@ -48,9 +47,8 @@ end
 
 nodes_array = [head_positions]
 
-1.times do
+9.times do
   current_node = nodes_array.last.clone.map(&:clone)
-  nodes_array << current_node
 
   current_node.map.with_index do |el, i|
     break if current_node[i + 1].nil?
@@ -67,8 +65,8 @@ nodes_array = [head_positions]
       current_node[i + 1] = el
     end
   end
+  chunked = current_node.chunk_while(&:==).map(&:first)
+  nodes_array << chunked
 end
 
-nodes_array.each { |el| p el.first(10)}
-positionsv = nodes_array.map { |e| e.uniq.size }
-p positionsv
+nodes_array.each { |e| p e.size }
