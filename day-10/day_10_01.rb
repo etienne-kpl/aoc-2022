@@ -12,15 +12,15 @@ commands.each do |el|
   case el[0]
   when 'noop'
     i += 1
-    strengths << (i * x) if i % 20 == 0
+    strengths << (i * x) if (i % 20).zero?
   when 'addx'
     2.times do
       i += 1
-      strengths << (i * x) if i % 20 == 0
+      strengths << (i * x) if (i % 20).zero?
     end
     x += el[1].to_i
   end
 end
 
 # The * is to pass an array as argument
-p strengths.values_at(* strengths.each_index.select { |i| i.even? }).sum
+p strengths.values_at(* strengths.each_index.select(&:even?)).sum
