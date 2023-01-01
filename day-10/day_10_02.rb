@@ -1,4 +1,6 @@
-INPUT = IO.readlines('input.txt', chomp: true).freeze
+# frozen_string_literal: false
+
+INPUT = IO.readlines('input.txt', chomp: true)
 # INPUT = IO.readlines('test_input.txt', chomp: true)
 
 commands = INPUT.map(&:split)
