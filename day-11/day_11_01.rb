@@ -2,14 +2,14 @@
 
 # INPUT = IO.readlines('input.txt', chomp: true)
 INPUT = open('test_input.txt').read
-
-commands = INPUT.dup.split(/\n\n/)
-commands.map! { |el| el.split(/\n/) }
-commands.each {|el| el.map! { |el| el.scan(/\d+/)} }
-p commands
 #divide by three
 
 class Monkey
+  @monkeys = {}
+  def self.parse(monkey_data)
+    name = monkey_data.split(/\n/)
+
+  end
   def initialize(attributes = {})
     @id = attributes[:id]
     @items = attributes[:items] || []
@@ -18,4 +18,8 @@ class Monkey
     @monkey_if_true = attributes[:monkey_if_true]
     @monkey_if_false = attributes[:monkey_if_false]
   end
+end
+
+INPUT.dup.split(/\n\n/).each do |monkey_data|
+  Monkey.parse(monkey_data)
 end
