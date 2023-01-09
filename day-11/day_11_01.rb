@@ -7,9 +7,9 @@ INPUT = open('test_input.txt').read
 class Monkey
   @monkeys = {}
   def self.parse(monkey_data)
-    name = monkey_data.split(/\n/)
-
+    n, i, o, t, tr, fa = monkey_data.split(/\n/)
   end
+
   def initialize(attributes = {})
     @id = attributes[:id]
     @items = attributes[:items] || []
@@ -23,3 +23,10 @@ end
 INPUT.dup.split(/\n\n/).each do |monkey_data|
   Monkey.parse(monkey_data)
 end
+
+Monkey 0:
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
