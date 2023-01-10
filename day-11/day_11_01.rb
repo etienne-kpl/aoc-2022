@@ -34,7 +34,13 @@ INPUT.dup.split(/\n\n/).each do |monkey_data|
   Monkey.parse(monkey_data)
 end
 
-p Monkey.all
+20.times do
+  @monkeys.each do |monkey|
+    @items.each do |item|
+
+    end
+  end
+end
 
 # Monkey 0:
 #   Starting items: 79, 98
