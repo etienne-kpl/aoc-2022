@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-INPUT = open('input.txt').read
-# INPUT = open('test_input.txt').read
+# INPUT = open('input.txt').read
+INPUT = open('test_input.txt').read
 
 class Monkey
   attr_reader :ope, :test, :if_true, :if_false
@@ -36,7 +36,7 @@ class Monkey
     @monkeys.each do |key, monkey|
       monkey.count += monkey.items.size
       monkey.items.map! do |item|
-        item.send(monkey.ope.first, (monkey.ope.last == 'old' ? item : monkey.ope.last.to_i)) / 3
+        item.send(monkey.ope.first, (monkey.ope.last == 'old' ? item : monkey.ope.last.to_i))
       end
       monkey.items.each do |item|
         (item % monkey.test).zero? ? (@monkeys[monkey.if_true].items << item) : (@monkeys[monkey.if_false].items << item)
@@ -58,5 +58,5 @@ end
 
 top_two = Monkey.all.map { |key, monkey| monkey.count }.sort.last(2)
 score = top_two.inject(:*)
-# p top_two
+p top_two
 p score
