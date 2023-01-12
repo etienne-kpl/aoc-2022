@@ -10,7 +10,7 @@ class Monkey
     n, i, o, t, tr, fa = monkey_data.split(/\n/)
     n = /(\d+)/.match(n)[1].to_i
     i = i.scan(/\d+/).map(&:to_i)
-    o = o.split('= ').last
+    o = o.split('= old').last.split(' ')
     t = /(\d+)/.match(t)[1].to_i
     tr = /(\d+)/.match(tr)[1].to_i
     fa = /(\d+)/.match(fa)[1].to_i
@@ -28,19 +28,29 @@ class Monkey
   def self.all
     @monkeys
   end
+
+  def self.inspect
+    20.times do
+      @monkeys.each do |monkey|
+        @items.each do |item|
+          # Transform the '+' into +
+          item = item.public_send(@peration.first, @operation.last == 'old' ? item : @operation.last.to_i)
+          item /= 3
+          (item % @test).zero? ? @monkeys[@monkey_if_true] << @items.shift : @monkeys[@monkey_if_false] << @items.shift
+        end
+      end
+    end
+  end
+
 end
 
 INPUT.dup.split(/\n\n/).each do |monkey_data|
   Monkey.parse(monkey_data)
 end
 
-20.times do
-  @monkeys.each do |monkey|
-    @items.each do |item|
+# Monkey.inspect
 
-    end
-  end
-end
+p Monkey.all
 
 # Monkey 0:
 #   Starting items: 79, 98
