@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-INPUT = IO.readlines('test_input.txt', chomp: true)
-# INPUT = IO.readlines('input.txt', chomp: true)
+# INPUT = IO.readlines('test_input.txt', chomp: true)
+INPUT = IO.readlines('input.txt', chomp: true)
 
 commands = INPUT.dup.map(&:split)
 
@@ -12,21 +12,25 @@ path = []
 commands.each do |command|
   case command
   in ['$', 'cd', '..']
-    p 'moving up'
+    p 'Moving up'
     path.pop
   in ['$', 'cd', dir]
-    p "moving in #{dir}"
+    p "Moving in #{dir}"
     path << dir
   in ['$', 'ls']
-    p 'listing files'
+    p 'listing files...'
   in ['dir', dir_name]
-    p "encountered dir #{dir_name}"
+    p "- dir #{dir_name}"
   in [size, file_name]
-    dir_sizes[path.dup] = 0 if dir_sizes[path.dup].nil?
-    dir_sizes[path.dup] += size.to_i
-    p "encoutered file #{file_name} of size #{size}"
+    path.dup.length.times do |x|
+      dir_sizes[path[0..x]] = 0 if dir_sizes[path[0..x]].nil?
+      dir_sizes[path[0..x]] += size.to_i
+    end
+    p "- File #{file_name} of size #{size}"
   end
-  p path
 end
 
 p dir_sizes
+total_values = 0
+dir_sizes.each_value { |v| total_values += v if v <= 100000 }
+p total_values
