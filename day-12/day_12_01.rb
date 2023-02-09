@@ -3,7 +3,6 @@
 # INPUT = IO.readlines('input.txt', chomp: true)
 INPUT = IO.readlines('test_input.txt', chomp: true)
 
-START, GOAL = {}
 INPUT.each_with_index do |line, index|
   line.each_char.with_index do |c, i|
     START = {val: 'a', x: i, y: index} if c == 'S'
@@ -12,85 +11,73 @@ INPUT.each_with_index do |line, index|
 end
 
 ALPHA = ('a'..'z').to_a
-cur_pos = START
-moves = [cur_pos.dup]
-
-def check_next(destination)
-  !destination[:val].nil? &&
-  ALPHA.index(cur_pos[:val]) <= ALPHA.index(destination[:val]) - 1 &&
-  !moves.include?(destination)
-end
-
-def move_to(destination)
-  moves << destination
-  cur_pos = destination
-end
-
 class Path
-  def initialize(moves = [])
+  @@all = []
+  def initialize(moves = [], cur_pos = START)
     @moves = moves
-    @cur_pos = START
+    @cur_pos = cur_pos
+    @@all << self
+  end
+
+  def self.all
+    @@all
   end
 
   def check_next(destination)
     !destination[:val].nil? &&
-    ALPHA.index(@cur_pos[:val]) <= ALPHA.index(destination[:val]) - 1 &&
+    ALPHA.index(@cur_pos[:val]) <= (ALPHA.index(destination[:val]) - 1) &&
     !@moves.include?(destination)
   end
 
   def move_to(destination)
-    @moves << destination
-    @cur_pos = destination
+    Path.new(moves: @moves.append(destination), cur_pos: destination)
   end
 
   def destroy_dup(destination)
     Path.all.each do |path|
-      if path.moves.include?(destination)
-        if path.moves.size > @moves
-          path.destroy
-        else
-          self.destroy
-        end
+      if path.moves.include?(destination) && path.moves.size >= @moves.size
+        path.destroy
       end
     end
   end
 
   def pathfind
-    until @cur_pos == GOAL do
-      # Top
-      destination = {val: INPUT[@cur_pos[:y] - 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] - 1}
-      if check_next(destination)
-        move_to(destination)
-        destroy_dup(destination)
-      else
-        # Right
-        destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] + 1], x: @cur_pos[:x] + 1, y: @cur_pos[:y]}
-        if check_next(destination)
-          destroy_dup(destination)
-          move_to(destination)
-        else
-          # Bottom
-          destination = {val: INPUT[@cur_pos[:y] + 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] + 1}
-          if check_next(destination)
-            destroy_dup(destination)
-            move_to(destination)
-          else
-            # Left
-            destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] - 1], x: @cur_pos[:x] - 1, y: @cur_pos[:y]}
-            if check_next(destination)
-              destroy_dup(destination)
-              move_to(destination)
-            else
-              # If I can't move to anything then we start again from beginning
-              self.destroy
-            end
-          end
-        end
-      end
+    # Top
+    destination = {val: INPUT[@cur_pos[:y] - 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] - 1}
+    if check_next(destination)
+      move_to(destination)
+      destroy_dup(destination)
     end
+    # Right
+    destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] + 1], x: @cur_pos[:x] + 1, y: @cur_pos[:y]}
+    if check_next(destination)
+      move_to(destination)
+      destroy_dup(destination)
+    end
+    # Bottom
+    destination = {val: INPUT[@cur_pos[:y] + 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] + 1}
+    if check_next(destination)
+      move_to(destination)
+      destroy_dup(destination)
+    end
+    # Left
+    destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] - 1], x: @cur_pos[:x] - 1, y: @cur_pos[:y]}
+    if check_next(destination)
+      move_to(destination)
+      destroy_dup(destination)
+    end
+    # I self destroy after those 4 steps
+    self.destroy
   end
 end
 
 p START
 p GOAL
-p moves
+until Path.all.any? { |path| path.cur_pos == GOAL } do
+  Path.all.each do |path|
+    path.pathfind
+  end
+end
+Path.all.each do |path|
+  p path.moves.size
+end
