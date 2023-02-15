@@ -10,6 +10,8 @@ INPUT.each_with_index do |line, index|
   end
 end
 
+move_set = []
+
 ALPHA = ('a'..'z').to_a
 class Path
   @@all = []
@@ -67,16 +69,14 @@ class Path
       destroy_dup(destination)
     end
     # I self destroy after those 4 steps
-    self.destroy
+    destroy
   end
 end
 
 p START
 p GOAL
-until Path.all.any? { |path| path.cur_pos == GOAL } do
-  Path.all.each do |path|
-    path.pathfind
-  end
+10.times do
+  Path.all.each(&:pathfind)
 end
 Path.all.each do |path|
   p path.moves.size
