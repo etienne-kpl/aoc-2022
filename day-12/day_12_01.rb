@@ -16,8 +16,37 @@ INPUT = IO.readlines('test_input.txt', chomp: true).map.with_index do |line, ind
   end
 end
 
-
 move_set = []
+cur_pos = START.dup
+
+def pathfind
+  # Top
+  destination = { x: cur_pos[:x], y: cur_pos[:y] - 1 }
+  if check_next(destination)
+    move_to(destination)
+    destroy_dup(destination)
+  end
+  # Right
+  destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] + 1], x: @cur_pos[:x] + 1, y: @cur_pos[:y]}
+  if check_next(destination)
+    move_to(destination)
+    destroy_dup(destination)
+  end
+  # Bottom
+  destination = {val: INPUT[@cur_pos[:y] + 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] + 1}
+  if check_next(destination)
+    move_to(destination)
+    destroy_dup(destination)
+  end
+  # Left
+  destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] - 1], x: @cur_pos[:x] - 1, y: @cur_pos[:y]}
+  if check_next(destination)
+    move_to(destination)
+    destroy_dup(destination)
+  end
+  # I self destroy after those 4 steps
+  destroy
+end
 
 # class Path
 #   @@all = []
