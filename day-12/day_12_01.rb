@@ -20,44 +20,34 @@ end
 
 PATHS = []
 
-def pathfind
+def pathfind(path)
+  cur_pos = PATHS.empty ? START.dup : path.last
   # Top
-  cur_pos = START.dup
   destination = { val: VALUES[cur_pos[:y] - 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] - 1 }
-  if check_next(destination, cur_pos)
-    moves << destination
-    cur_pos = destination
+  PATHS << path.dup.append(destination) if check_next(destination) # Create new path with the destination
 
-  end
   # Right
-  destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] + 1], x: @cur_pos[:x] + 1, y: @cur_pos[:y]}
-  if check_next(destination)
-    move_to(destination)
-    destroy_dup(destination)
-  end
+  destination = { val: INPUT[@cur_pos[:y]][@cur_pos[:x] + 1], x: @cur_pos[:x] + 1, y: @cur_pos[:y] }
+  PATHS << path.dup.append(destination) if check_next(destination)
+
   # Bottom
-  destination = {val: INPUT[@cur_pos[:y] + 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] + 1}
-  if check_next(destination)
-    move_to(destination)
-    destroy_dup(destination)
-  end
+  destination = { val: INPUT[@cur_pos[:y] + 1][@cur_pos[:x]], x: @cur_pos[:x], y: @cur_pos[:y] + 1 }
+  PATHS << path.dup.append(destination) if check_next(destination)
+
   # Left
-  destination = {val: INPUT[@cur_pos[:y]][@cur_pos[:x] - 1], x: @cur_pos[:x] - 1, y: @cur_pos[:y]}
-  if check_next(destination)
-    move_to(destination)
-    destroy_dup(destination)
-  end
-  # I self destroy after those 4 steps
-  destroy
+  destination = { val: INPUT[@cur_pos[:y]][@cur_pos[:x] - 1], x: @cur_pos[:x] - 1, y: @cur_pos[:y] }
+  PATHS << path.dup.append(destination) if check_next(destination)
+
+  # This path is destroyed after those 4 steps
+  PATHS.delete(path)
 end
 
 def check_next(destination)
-  !destination[:val].nil? && cur_pos[:val] <= destination[:val] - 1 && PATHS.none? { |path| path.include?(destination) }
+  # Destination value exists, is up to 1 higher than current position and has not been visited yet
+  !destination[:val].nil? &&
+    cur_pos[:val] >= destination[:val] - 1 &&
+    PATHS.none? { |path| path.include?(destination) }
 end
-
-# PATHS.each do |path|
-#   PATHS.delete(path) if path.include?(destination) && path.size >= moves.size
-# end
 
 p START
 p GOAL
