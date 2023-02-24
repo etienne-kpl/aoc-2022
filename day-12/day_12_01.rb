@@ -21,7 +21,7 @@ end
 PATHS = [[START.dup]]
 
 def check_next(destination, cur_pos)
-  # Destination value exists, is up to 1 higher than current position and has not been visited yet
+  # Destination value exists, is reachable on current position, is inside the grid and has not been visited yet
   !destination[:val].nil? &&
     destination[:y] >= 0 &&
     destination[:x] >= 0 &&
@@ -31,7 +31,7 @@ end
 
 def pathfind(path)
   cur_pos = path.last
-  # Top
+  # # Top
   destination = { val: VALUES[cur_pos[:y] - 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] - 1 }
   PATHS << path.dup.append(destination) if check_next(destination, cur_pos) # Create new path with the destination
 
@@ -53,9 +53,11 @@ def pathfind(path)
   PATHS.delete(path)
 end
 
-PATHS.each { |path| pathfind(path) }
+until PATHS.any? { |path| path.include?(GOAL) }
+  PATHS.each { |path| pathfind(path) }
+end
 
 p START
 p GOAL
-# p VALUES
-p PATHS
+p VALUES
+p PATHS.flatten.size - 1
