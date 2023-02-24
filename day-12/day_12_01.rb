@@ -23,6 +23,8 @@ PATHS = [[START.dup]]
 def check_next(destination, cur_pos)
   # Destination value exists, is up to 1 higher than current position and has not been visited yet
   !destination[:val].nil? &&
+    destination[:y] >= 0 &&
+    destination[:x] >= 0 &&
     cur_pos[:val] >= (destination[:val] - 1) &&
     PATHS.none? { |path| path.include?(destination) }
 end
@@ -49,11 +51,9 @@ def pathfind(path)
   PATHS.delete(path)
 end
 
-10.times do
-  PATHS.each { |path| pathfind(path) }
-end
+PATHS.each { |path| pathfind(path) } until cur_pos == GOAL
 
-# p START
-# p GOAL
+p START
+p GOAL
 # p VALUES
-# p PATHS
+p PATHS
