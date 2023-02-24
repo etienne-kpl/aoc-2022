@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# INPUT = IO.readlines('input.txt', chomp: true)
-INPUT = IO.readlines('test_input.txt', chomp: true)
+INPUT = IO.readlines('input.txt', chomp: true)
+# INPUT = IO.readlines('test_input.txt', chomp: true)
 
 VALUES = INPUT.dup.map.with_index do |line, index|
   line.chars.map.with_index do |c, i|
@@ -60,4 +60,7 @@ end
 p START
 p GOAL
 p VALUES
-p PATHS.flatten.size - 1
+score = PATHS.dup.select do |path|
+  path.include?(GOAL)
+end
+p score.map(&:size).min - 1
