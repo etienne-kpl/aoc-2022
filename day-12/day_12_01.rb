@@ -39,9 +39,11 @@ def pathfind(path)
   destination = { val: VALUES[cur_pos[:y]][cur_pos[:x] + 1], x: cur_pos[:x] + 1, y: cur_pos[:y] }
   PATHS << path.dup.append(destination) if check_next(destination, cur_pos)
 
-  # Bottom
-  destination = { val: VALUES[cur_pos[:y] + 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] + 1 }
-  PATHS << path.dup.append(destination) if check_next(destination, cur_pos)
+  # Bottom (needs a check because of the [cur_pos[:y] + 1][cur_pos[:x]] -> the first part can be nil)
+  unless cur_pos[:y] + 1 >= VALUES.size
+    destination = { val: VALUES[cur_pos[:y] + 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] + 1 }
+    PATHS << path.dup.append(destination) if check_next(destination, cur_pos)
+  end
 
   # Left
   destination = { val: VALUES[cur_pos[:y]][cur_pos[:x] - 1], x: cur_pos[:x] - 1, y: cur_pos[:y] }
@@ -51,7 +53,7 @@ def pathfind(path)
   PATHS.delete(path)
 end
 
-PATHS.each { |path| pathfind(path) } until cur_pos == GOAL
+PATHS.each { |path| pathfind(path) }
 
 p START
 p GOAL
