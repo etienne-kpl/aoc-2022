@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# INPUT = IO.readlines('input.txt', chomp: true)
-INPUT = IO.readlines('test_input.txt', chomp: true)
+INPUT = IO.readlines('input.txt', chomp: true)
+# INPUT = IO.readlines('test_input.txt', chomp: true)
 
 VALUES = INPUT.dup.map.with_index do |line, index|
   line.chars.map.with_index do |c, i|
@@ -29,29 +29,28 @@ def pathfind(path)
   cur_pos = path.last
   x = cur_pos[:x]
   y = cur_pos[:y]
-  priority = []
+  destinations = []
   # Top
-  priority << { val: VALUES[y - 1][x], x: x, y: y - 1 } if y.positive?
+  destinations << { val: VALUES[y - 1][x], x: x, y: y - 1 } if y.positive?
   # Right
-  priority << { val: VALUES[y][x + 1], x: x + 1, y: y } if VALUES[y].size > x + 1
+  destinations << { val: VALUES[y][x + 1], x: x + 1, y: y } if VALUES[y].size > x + 1
   # Bottom
-  priority << { val: VALUES[y + 1][x], x: x, y: y + 1 } if VALUES.size > y + 1
+  destinations << { val: VALUES[y + 1][x], x: x, y: y + 1 } if VALUES.size > y + 1
   # Left
-  priority << { val: VALUES[y][x - 1], x: x - 1, y: y } if x.positive?
+  destinations << { val: VALUES[y][x - 1], x: x - 1, y: y } if x.positive?
 
-  priority.sort_by! do |destination|
-    # Sorted by closest and higher
-    [(GOAL[:x] - destination[:x]).abs + (GOAL[:y] - destination[:y]).abs, cur_pos[:val] - destination[:val]]
-  end
-  priority.each { |destination| PATHS << path.dup.append(destination) if check_next(destination, cur_pos) }
+  # Sorted by closest and higher
+  destinations.sort_by! { |d| [(GOAL[:x] - d[:x]).abs + (GOAL[:y] - d[:y]).abs, -d[:val]] }
+  destinations.each { |d| PATHS << path.dup.append(d) if check_next(d, cur_pos) }
 
   # This path is destroyed after those 4 steps
   PATHS.delete(path)
 end
 
 until PATHS.any? { |path| path.include?(GOAL) }
-  PATHS.each { |path| pathfind(path) }
-  # PATHS.sort_by! { |path| (GOAL[:x] - path.last[:x]).abs + (GOAL[:y] - path.last[:y]).abs }
+  # PATHS.each { |path| pathfind(path) }
+  pathfind(PATHS.first)
+  # PATHS.sort_by! { |path| [(GOAL[:x] - path.last[:x]).abs + (GOAL[:y] - path.last[:y]).abs, -path.last[:val]] }
 end
 
 p START
