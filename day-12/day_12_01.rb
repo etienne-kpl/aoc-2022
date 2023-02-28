@@ -31,27 +31,23 @@ end
 
 def pathfind(path)
   cur_pos = path.last
-  # Top
-  destination = { val: VALUES[cur_pos[:y] - 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] - 1 }
-  PATHS << path.dup.append(destination) if check_next(destination, cur_pos) # Create new path with the destination
-
-  # Right
-  destination = { val: VALUES[cur_pos[:y]][cur_pos[:x] + 1], x: cur_pos[:x] + 1, y: cur_pos[:y] }
-  PATHS << path.dup.append(destination) if check_next(destination, cur_pos)
-
+  priority = [
+    { val: VALUES[cur_pos[:y] - 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] - 1 }, # Top
+    { val: VALUES[cur_pos[:y]][cur_pos[:x] + 1], x: cur_pos[:x] + 1, y: cur_pos[:y] }, # Right
+    { val: VALUES[cur_pos[:y]][cur_pos[:x] - 1], x: cur_pos[:x] - 1, y: cur_pos[:y] } # Left
+  ]
   # Bottom (needs a check because of the [cur_pos[:y] + 1][cur_pos[:x]] -> the first part can be nil)
   unless cur_pos[:y] + 1 >= VALUES.size
-    destination = { val: VALUES[cur_pos[:y] + 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] + 1 }
-    PATHS << path.dup.append(destination) if check_next(destination, cur_pos)
+    priority << { val: VALUES[cur_pos[:y] + 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] + 1 }
   end
-
-  # Left
-  destination = { val: VALUES[cur_pos[:y]][cur_pos[:x] - 1], x: cur_pos[:x] - 1, y: cur_pos[:y] }
-  PATHS << path.dup.append(destination) if check_next(destination, cur_pos)
+  priority.sort_by! do |destination|
+    (GOAL[:x] - destination[:x]).abs + (GOAL[:y] - destination[:y]).abs
+  end
+  priority.each { |destination| PATHS << path.dup.append(destination) if check_next(destination, cur_pos) }
 
   # This path is destroyed after those 4 steps
   PATHS.delete(path)
-
+  PATHS.sort_by! { |el| (GOAL[:x] - el.last[:x]).abs + (GOAL[:y] - el.last[:y]).abs }
 end
 
 until PATHS.any? { |path| path.include?(GOAL) }
