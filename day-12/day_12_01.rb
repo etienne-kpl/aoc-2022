@@ -31,7 +31,7 @@ end
 
 def pathfind(path)
   cur_pos = path.last
-  # # Top
+  # Top
   destination = { val: VALUES[cur_pos[:y] - 1][cur_pos[:x]], x: cur_pos[:x], y: cur_pos[:y] - 1 }
   PATHS << path.dup.append(destination) if check_next(destination, cur_pos) # Create new path with the destination
 
@@ -51,6 +51,7 @@ def pathfind(path)
 
   # This path is destroyed after those 4 steps
   PATHS.delete(path)
+
 end
 
 until PATHS.any? { |path| path.include?(GOAL) }
@@ -59,7 +60,7 @@ end
 
 p START
 p GOAL
-p VALUES
+# p VALUES
 score = PATHS.dup.select do |path|
   path.include?(GOAL)
 end
