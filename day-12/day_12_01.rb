@@ -39,18 +39,16 @@ def pathfind(path)
   # Left
   destinations << { val: VALUES[y][x - 1], x: x - 1, y: y } if x.positive?
 
-  # Sorted by closest and higher
-  destinations.sort_by! { |d| [(GOAL[:x] - d[:x]).abs + (GOAL[:y] - d[:y]).abs, -d[:val]] }
   destinations.each { |d| PATHS << path.dup.append(d) if check_next(d, cur_pos) }
-
-  # This path is destroyed after those 4 steps
-  PATHS.delete(path)
 end
 
 until PATHS.any? { |path| path.include?(GOAL) }
-  # PATHS.each { |path| pathfind(path) }
+  # Sorted by closest and higher
+  PATHS.sort_by! { |path| [(GOAL[:x] - path.last[:x]).abs + (GOAL[:y] - path.last[:y]).abs, -path.last[:val]] }
+  # Taking the optimal path
   pathfind(PATHS.first)
-  # PATHS.sort_by! { |path| [(GOAL[:x] - path.last[:x]).abs + (GOAL[:y] - path.last[:y]).abs, -path.last[:val]] }
+  # Deleting it after the pathfinding to keep it clean
+  PATHS.shift
 end
 
 p START
