@@ -43,8 +43,8 @@ def pathfind(path)
 end
 
 until PATHS.any? { |path| path.include?(GOAL) }
-  # Sorted by closest and higher
-  PATHS.sort_by! { |path| [(GOAL[:x] - path.last[:x]).abs + (GOAL[:y] - path.last[:y]).abs, -path.last[:val]] }
+  # Sorted by shortest, closest and higher
+  PATHS.sort_by! { |path| [path.size, (GOAL[:x] - path.last[:x]).abs + (GOAL[:y] - path.last[:y]).abs, -path.last[:val]] }
   # Taking the optimal path
   pathfind(PATHS.first)
   # Deleting it after the pathfinding to keep it clean
