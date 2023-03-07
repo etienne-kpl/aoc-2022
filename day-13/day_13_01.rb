@@ -12,7 +12,7 @@ def compare(pair)
     pair.first.zip(pair.last).each do |new_pair|
       compare(new_pair)
     end
-  elsif pair.all? { |el| el.is_a? Integer }
+  elsif pair.all? { |el| el.is_a?(Integer) || el.nil? }
     !pair.last.nil? && pair.first <= pair.last
   elsif pair.first.is_a? Integer
     compare([[pair.first], pair.last])
@@ -23,10 +23,11 @@ end
 
 count = 0
 
-INPUT.each_with_index do |el, i|
-  el[:l].zip(el[:r]).each do |pair|
-    p pair
-    # count += (i + 1) if compare(pair)
+INPUT.each_with_index do |el, index|
+  p count
+  count += (index + 1) if el[:l].zip(el[:r]).all? do |pair|
+    # p pair
+    compare(pair)
   end
 end
 
