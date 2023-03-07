@@ -9,11 +9,11 @@ end
 def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
-    pair.first.zip(pair.last).all? do |new_pair|
+    return true if pair.first.size == pair.last.size && pair.first.zip(pair.last).all? do |new_pair|
       compare(new_pair)
     end
-  elsif pair.all? { |el| el.is_a? Integer }
-    pair.first <= pair.last
+  elsif pair.all? { |el| el.is_a?(Integer) || el.nil? }
+    !pair.last.nil? && pair.first <= pair.last
   elsif pair.first.is_a? Integer
     compare([[pair.first], pair.last])
   else
