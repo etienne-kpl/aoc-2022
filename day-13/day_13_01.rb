@@ -10,6 +10,7 @@ def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
     pair.first.zip(pair.last).any? do |new_pair|
+      # Must find a stop here
       compare(new_pair)
     end
   elsif pair.all? { |el| el.is_a?(Integer) || el.nil? }
