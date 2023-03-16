@@ -6,11 +6,11 @@ INPUT = IO.read('test_input.txt').split(/\n\n/).map do |pair|
   { l: JSON.parse(l), r: JSON.parse(r) }
 end
 
+# Got to rethink that part, so it produces 0 or 1 only
 def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
     pair.first.zip(pair.last).each do |new_pair|
-      # Must find a stop here
       compare(new_pair)
     end
   elsif pair.all? { |el| el.is_a?(Integer) } && pair.first < pair.last
@@ -30,6 +30,7 @@ end
 
 count = 0
 
+# Must run, then break and go to next if 0, break and update if 1, update if none of this happened.
 INPUT.each_with_index do |packet, index|
   p count
   p ""
