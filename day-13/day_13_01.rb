@@ -11,16 +11,19 @@ def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
     pair.first.zip(pair.last).each do |new_pair|
-      compare(new_pair)
+      case compare(new_pair)
+      when 0
+        break 0
+      when 1
+        break 1
+      end
     end
   elsif pair.all? { |el| el.is_a?(Integer) } && pair.first < pair.last
     return 0
   elsif pair.all? { |el| el.is_a?(Integer) } && pair.first > pair.last
-    return 2
-  elsif pair.all? { |el| el.is_a?(Integer) }
     return 1
   elsif pair.last.nil?
-    return 2
+    return 1
   elsif pair.first.is_a? Integer
     compare([[pair.first], pair.last])
   else
@@ -40,9 +43,9 @@ INPUT.each_with_index do |packet, index|
       count += (index + 1)
       break
     when 1
-      next
-    when 2
       break
+    else
+      count += (index + 1)
     end
   end
 end
