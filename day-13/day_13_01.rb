@@ -6,18 +6,21 @@ INPUT = IO.read('test_input.txt').split(/\n\n/).map do |pair|
   { l: JSON.parse(l), r: JSON.parse(r) }
 end
 
+
+
+
 # Got to rethink that part, so it produces 0 or 1 only
 def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
-    pair.first.zip(pair.last).each do |new_pair|
+    pair.first.zip(pair.last).any? do |new_pair|
       compare(new_pair)
     end
   elsif pair.all? { |el| el.is_a?(Integer) }
     if pair.first < pair.last
-      0
+      return 0
     elsif pair.first > pair.last
-      1
+      return 1
     end
   elsif pair.last.nil?
     return 1
