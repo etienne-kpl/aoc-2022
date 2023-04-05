@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 require 'json'
 
-INPUT = IO.read('test_input.txt').split(/\n\n/).map do |pair|
+INPUT = IO.read('input.txt').split(/\n\n/).map do |pair|
   l, r = pair.split(/\n/)
   { l: JSON.parse(l), r: JSON.parse(r) }
 end
 
 count = 0
 
+# The last problem is if a list come short of items on the left.
 def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
+    pair.first << 0 while pair.first.size < pair.last.size
     pair.first.zip(pair.last).each do |new_pair|
       case compare(new_pair)
       when 0
@@ -35,17 +37,21 @@ def compare(pair)
 end
 
 INPUT.each_with_index do |packet, index|
-  p "pair ##{index + 1}"
+  puts '------'
+  puts "Pair #{index + 1}"
   count += (index + 1)
   packet[:l].zip(packet[:r]).each do |pair|
     case compare(pair)
     when 0
-      p 'right order'
+      puts 'OK'
       break
     when 1
       count -= (index + 1)
-      p 'wrong order'
+      puts 'WRONG'
       break
     end
   end
+  p count
 end
+
+p count
