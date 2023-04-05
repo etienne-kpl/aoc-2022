@@ -8,11 +8,11 @@ end
 
 count = 0
 
-# The last problem is if a list come short of items on the left.
 def compare(pair)
   p pair
   if pair.all? { |el| el.is_a? Array }
-    pair.first << 0 while pair.first.size < pair.last.size
+    # Adding nil to process the .zip until the end
+    pair.first << nil while pair.first.size < pair.last.size
     pair.first.zip(pair.last).each do |new_pair|
       case compare(new_pair)
       when 0
@@ -29,6 +29,8 @@ def compare(pair)
     end
   elsif pair.last.nil?
     1
+  elsif pair.first.nil?
+    0
   elsif pair.first.is_a? Integer
     compare([[pair.first], pair.last])
   else
@@ -51,7 +53,6 @@ INPUT.each_with_index do |packet, index|
       break
     end
   end
-  p count
 end
 
 p count
