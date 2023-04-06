@@ -7,6 +7,7 @@ INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
   end
 end
 
+source = {x: 500, y: 0}
 rocks = []
 
 INPUT.each do |line|
@@ -22,13 +23,18 @@ INPUT.each do |line|
   end
 end
 
-SOURCE = {x: 500, y: 0}
+# Some lines might cross, but I only need one reference for each one
+rocks.uniq!
 
-sand_loc = []
-p INPUT
+# Now I need to find the lowest point, so when an unit of sand will pass that point, it'll means we've reach the abyss
+lowest = rocks.max_by { |el| el[:y]}[:y]
+
+p bottom_line
+
 p rocks
 p rocks.size
 
+sand_loc = []
 # def produce_sand
 
 # end
