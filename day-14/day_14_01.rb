@@ -8,35 +8,15 @@ INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
 end
 
 rocks = []
+
 INPUT.each do |line|
+  rocks << line.first
   line.each_cons(2) do |pair|
-    if pair.first[:x] == pair.last[:x]
-      if pair.first[:y] > pair.last[:y]
-        count = pair.last[:y]
-        until rocks.last == pair.first
-          rocks << {x: pair.first[:x], y: count}
-          count += 1
-        end
+    until rocks.last == pair.last
+      if pair.first[:x] == pair.last[:x]
+        rocks << {x: pair.first[:x], y: (pair.first[:y] < pair.last[:y] ? rocks.last[:y] + 1 : rocks.last[:y] - 1)}
       else
-        count = pair.first[:y]
-        until rocks.last == pair.last
-          rocks << {x: pair.first[:x], y: count}
-          count += 1
-        end
-      end
-    else
-      if pair.first[:x] > pair.last[:x]
-        count = pair.last[:x]
-        until rocks.last == pair.first
-          rocks << {x: count, y: pair.first[:y]}
-          count += 1
-        end
-      else
-        count = pair.first[:y]
-        until rocks.last == pair.last
-          rocks << {x: count, y: pair.first[:y]}
-          count += 1
-        end
+        rocks << {x: (pair.first[:x] < pair.last[:x] ? rocks.last[:x] + 1 : rocks.last[:x] - 1), y: pair.first[:y]}
       end
     end
   end
@@ -45,6 +25,7 @@ end
 SOURCE = {x: 500, y: 0}
 
 sand_loc = []
+p INPUT
 p rocks
 p rocks.size
 
