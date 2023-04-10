@@ -53,4 +53,5 @@ end
 
 produce_sand
 
+# The size here is not good
 p (SANDS - rocks).size
