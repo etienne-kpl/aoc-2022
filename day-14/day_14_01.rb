@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
+INPUT = IO.readlines('input.txt', chomp: true).map do |line|
   line.split(' -> ').map do |el|
     x, y = el.split(',')
     {x: x.to_i, y: y.to_i}
   end
 end
 
-SOURCE = {x: 500, y: 0}
+source = {x: 500, y: 0}
 rocks = []
 
 INPUT.each do |line|
@@ -23,35 +23,30 @@ INPUT.each do |line|
   end
 end
 
-# Some lines might cross, but I only need one reference for each one
+# Some lines might cross, so I get rid of multiple references
 rocks.uniq!
 
 # When an unit of sand will pass that point, it'll means we've reach the abyss
-LOWEST = rocks.max_by { |el| el[:y]}[:y]
+lowest = rocks.max_by { |el| el[:y]}[:y]
 
-p LOWEST
-p rocks.size
+sands = rocks.dup
 
-SANDS = rocks.dup
-def produce_sand
-  unit = SOURCE.dup
-  until unit[:y] == LOWEST
-    if !SANDS.include?({x: unit[:x], y: unit[:y] + 1})
-      unit[:y] += 1
-    elsif !SANDS.include?({x: unit[:x] - 1, y: unit[:y] + 1})
-      unit[:x] -= 1
-      unit[:y] += 1
-    elsif !SANDS.include?({x: unit[:x] + 1, y: unit[:y] + 1})
-      unit[:x] += 1
-      unit[:y] += 1
-    else
-      SANDS << unit
-      produce_sand
-    end
+unit = source.dup
+until unit[:y] >= lowest || sands.include?(source)
+  if !sands.include?({x: unit[:x], y: unit[:y] + 1})
+    unit[:y] += 1
+  elsif !sands.include?({x: unit[:x] - 1, y: unit[:y] + 1})
+    unit[:x] -= 1
+    unit[:y] += 1
+  elsif !sands.include?({x: unit[:x] + 1, y: unit[:y] + 1})
+    unit[:x] += 1
+    unit[:y] += 1
+  else
+    sands << unit
+    unit = source.dup
   end
 end
 
-produce_sand
-
-# The size here is not good
-p (SANDS - rocks).size
+p "lowest point: #{lowest}"
+p "Nb of rocks: #{rocks.size}"
+p "Nb of sands unit: #{sands.size - rocks.size}"
