@@ -33,13 +33,10 @@ lowest = rocks.max_by { |el| el[:y] }[:y] + 1
 sands = rocks.dup
 
 unit = source.dup
-def find_bottom(unit, sands)
-  sands.select { |el| el[:x] == unit[:x] }.max_by { |el| el[:y] }[:y] - 1
-end
-
 until sands.include?(source)
   # It's too slow step by step, so I check the furthest point vertically
-  unit[:y] = find_bottom(unit, sands)
+  bottom = sands.select { |el| el[:x] == unit[:x] }.min_by { |el| el[:y] }
+  unit[:y] = bottom.nil? ? lowest : (bottom[:y] - 1)
   if unit[:y] == lowest
     sands << unit
     unit = source.dup
