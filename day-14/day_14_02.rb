@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-INPUT = IO.readlines('input.txt', chomp: true).map do |line|
+INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
   line.split(' -> ').map do |el|
     x, y = el.split(',')
     { x: x.to_i, y: y.to_i }
   end
 end
 
-source = { x: 500, y: 0 }
+SOURCE = { x: 500, y: 0 }
 rocks = []
 
 INPUT.each do |line|
@@ -32,22 +32,24 @@ lowest = rocks.max_by { |el| el[:y] }[:y] + 1
 
 sands = rocks.dup
 
-unit = source.dup
-
-until sands.include?(source)
-  # I needed to get rid of the rocks above
+unit = SOURCE.dup
+until sands.include?(SOURCE)
   bottom = sands.select { |el| el[:x] == unit[:x] && el[:y] > unit[:y] }.min_by { |el| el[:y] }
   unit[:y] = bottom.nil? ? lowest : bottom[:y] - 1
-  if unit[:y] == lowest
-    sands << unit
-    unit = source.dup
-  elsif !sands.include?({ x: unit[:x] - 1, y: unit[:y] + 1 })
-    unit[:x] -= 1
-  elsif !sands.include?({ x: unit[:x] + 1, y: unit[:y] + 1 })
-    unit[:x] += 1
+  if unit[:y] != lowest
+    bottom_left = sands.select { |el| el[:x] == unit[:x] - 1 && el[:y] > unit[:y] }.min_by { |el| el[:y] }
+    bottom_right = sands.select { |el| el[:x] == unit[:x] + 1 && el[:y] > unit[:y] }.min_by { |el| el[:y] }
+    if bottom_left.nil? || bottom_left[:y] > unit[:y]
+      unit[:x] -= 1
+    elsif bottom_right.nil? || bottom_right[:y] > unit[:y]
+      unit[:x] += 1
+    else
+      sands << unit
+      unit = SOURCE.dup
+    end
   else
     sands << unit
-    unit = source.dup
+    unit = SOURCE.dup
   end
 end
 
