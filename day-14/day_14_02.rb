@@ -33,19 +33,18 @@ lowest = rocks.max_by { |el| el[:y] }[:y] + 1
 sands = rocks.dup
 
 unit = source.dup
+
 until sands.include?(source)
+  # I needed to get rid of the rocks above
+  bottom = sands.select { |el| el[:x] == unit[:x] && el[:y] > unit[:y] }.min_by { |el| el[:y] }
+  unit[:y] = bottom.nil? ? lowest : bottom[:y] - 1
   if unit[:y] == lowest
     sands << unit
     unit = source.dup
-  elsif !sands.include?({ x: unit[:x], y: unit[:y] + 1 })
-    bottom = sands.select { |el| el[:x] == unit[:x] }.min_by { |el| el[:y] }
-    unit[:y] = bottom.nil? ? lowest : bottom[:y] - 1
   elsif !sands.include?({ x: unit[:x] - 1, y: unit[:y] + 1 })
     unit[:x] -= 1
-    unit[:y] += 1
   elsif !sands.include?({ x: unit[:x] + 1, y: unit[:y] + 1 })
     unit[:x] += 1
-    unit[:y] += 1
   else
     sands << unit
     unit = source.dup
