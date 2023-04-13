@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-INPUT = IO.readlines('input.txt', chomp: true).map do |line|
+INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
   line.split(' -> ').map do |el|
     x, y = el.split(',')
     { x: x.to_i, y: y.to_i }
@@ -33,12 +33,16 @@ lowest = rocks.max_by { |el| el[:y] }[:y] + 1
 sands = rocks.dup
 
 unit = source.dup
+def find_bottom(unit, sands)
+  sands.select { |el| el[:x] == unit[:x] }.max_by { |el| el[:y] }[:y] - 1
+end
+
 until sands.include?(source)
+  # It's too slow step by step, so I check the furthest point vertically
+  unit[:y] = find_bottom(unit, sands)
   if unit[:y] == lowest
     sands << unit
     unit = source.dup
-  elsif !sands.include?({ x: unit[:x], y: unit[:y] + 1 })
-    unit[:y] += 1
   elsif !sands.include?({ x: unit[:x] - 1, y: unit[:y] + 1 })
     unit[:x] -= 1
     unit[:y] += 1
