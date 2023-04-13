@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
+INPUT = IO.readlines('input.txt', chomp: true).map do |line|
   line.split(' -> ').map do |el|
     x, y = el.split(',')
     { x: x.to_i, y: y.to_i }
   end
 end
 
-SOURCE = { x: 500, y: 0 }
+SOURCE = { x: 500, y: 0 }.freeze
 rocks = []
 
 INPUT.each do |line|
@@ -34,19 +34,16 @@ sands = rocks.dup
 
 unit = SOURCE.dup
 until sands.include?(SOURCE)
+  # find the bottom on the same x axis, without the rocks above the y position
   bottom = sands.select { |el| el[:x] == unit[:x] && el[:y] > unit[:y] }.min_by { |el| el[:y] }
   unit[:y] = bottom.nil? ? lowest : bottom[:y] - 1
-  if unit[:y] != lowest
-    bottom_left = sands.select { |el| el[:x] == unit[:x] - 1 && el[:y] > unit[:y] }.min_by { |el| el[:y] }
-    bottom_right = sands.select { |el| el[:x] == unit[:x] + 1 && el[:y] > unit[:y] }.min_by { |el| el[:y] }
-    if bottom_left.nil? || bottom_left[:y] > unit[:y]
-      unit[:x] -= 1
-    elsif bottom_right.nil? || bottom_right[:y] > unit[:y]
-      unit[:x] += 1
-    else
-      sands << unit
-      unit = SOURCE.dup
-    end
+  if unit[:y] == lowest
+    sands << unit
+    unit = SOURCE.dup
+  elsif !sands.include?({ x: unit[:x] - 1, y: unit[:y] + 1 })
+    unit[:x] -= 1
+  elsif !sands.include?({ x: unit[:x] + 1, y: unit[:y] + 1 })
+    unit[:x] += 1
   else
     sands << unit
     unit = SOURCE.dup
