@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-INPUT = IO.readlines('test_input.txt', chomp: true).map do |line|
+INPUT = IO.readlines('input.txt', chomp: true).map do |line|
   line.split(' -> ').map do |el|
     x, y = el.split(',')
     { x: x.to_i, y: y.to_i }
@@ -15,10 +15,10 @@ INPUT.each do |line|
   line.each_cons(2) do |pair|
     until parsed_input.last == pair.last
       parsed_input << if pair.first[:x] == pair.last[:x]
-                 { x: pair.first[:x], y: (pair.first[:y] < pair.last[:y] ? parsed_input.last[:y] + 1 : parsed_input.last[:y] - 1) }
-               else
-                 { x: (pair.first[:x] < pair.last[:x] ? parsed_input.last[:x] + 1 : parsed_input.last[:x] - 1), y: pair.first[:y] }
-               end
+                        { x: pair.first[:x], y: (pair.first[:y] < pair.last[:y] ? parsed_input.last[:y] + 1 : parsed_input.last[:y] - 1) }
+                      else
+                        { x: (pair.first[:x] < pair.last[:x] ? parsed_input.last[:x] + 1 : parsed_input.last[:x] - 1), y: pair.first[:y] }
+                      end
     end
   end
 end
@@ -37,22 +37,30 @@ end
 # When an unit of sand will reach that point, it'll means we've reach the bottom
 lowest = rocks.values.flatten.max + 2
 
-# I store the sands unit in an array containing the rocks
-sands = rocks.clone
+# I store the sands unit in an hash containing the rocks
+sands = {}
+rocks.each do |key, value|
+  sands[key] = value.clone
+end
 
 unit = SOURCE.dup
 until sands[SOURCE[:x]].include? SOURCE[:y]
   # find the bottom on the same x axis, without the rocks above the y position
-  bottom = sands[unit[:x]].nil? || sands[unit[:x]].select { |el| el > unit[:y] }.min.nil? ? lowest : sands[unit[:x]].select { |el| el > unit[:y] }.min
+  bottom = if sands[unit[:x]].nil? || sands[unit[:x]].select { |el| el > unit[:y] }.min.nil?
+             lowest
+           else
+             sands[unit[:x]].select { |el| el > unit[:y] }.min
+           end
   # move on top of it
   unit[:y] = bottom - 1
   if unit[:y] == lowest - 1
-    sands[unit[:x]] = []
+    # The array may already exist if there were rocks above the position of the unit, hence the ||=
+    sands[unit[:x]] ||= []
     sands[unit[:x]] << unit[:y]
     unit = SOURCE.dup
-  elsif sands[(unit[:x] - 1)].nil? || !sands[(unit[:x] - 1)].include?(unit[:y] + 1)
+  elsif sands[unit[:x] - 1].nil? || !sands[unit[:x] - 1].include?(unit[:y] + 1)
     unit[:x] -= 1
-  elsif sands[(unit[:x] + 1)].nil? || !sands[(unit[:x] + 1)].include?(unit[:y] + 1)
+  elsif sands[unit[:x] + 1].nil? || !sands[unit[:x] + 1].include?(unit[:y] + 1)
     unit[:x] += 1
   else
     sands[unit[:x]] << unit[:y]
