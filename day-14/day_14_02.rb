@@ -38,7 +38,7 @@ end
 lowest = rocks.values.flatten.max + 2
 
 # I store the sands unit in an array containing the rocks
-sands = rocks.dup
+sands = rocks.clone
 
 unit = SOURCE.dup
 until sands[SOURCE[:x]].include? SOURCE[:y]
@@ -50,9 +50,9 @@ until sands[SOURCE[:x]].include? SOURCE[:y]
     sands[unit[:x]] = []
     sands[unit[:x]] << unit[:y]
     unit = SOURCE.dup
-  elsif sands[unit[:x] - 1].nil? || !sands[unit[:x] - 1].include?(unit[:y] + 1)
+  elsif sands[(unit[:x] - 1)].nil? || !sands[(unit[:x] - 1)].include?(unit[:y] + 1)
     unit[:x] -= 1
-  elsif sands[unit[:x] + 1].nil? || !sands[unit[:x] + 1].include?(unit[:y] + 1)
+  elsif sands[(unit[:x] + 1)].nil? || !sands[(unit[:x] + 1)].include?(unit[:y] + 1)
     unit[:x] += 1
   else
     sands[unit[:x]] << unit[:y]
